@@ -1,35 +1,94 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState, useContext, useRef } from "react";
+import "./App.css";
+import "./globals.css";
+import ProductGrid from "./components/ProductGrid";
+import CartSidebar from "./components/CartSidebar";
+//import products from "./products.json";
+import { GlobalContext } from "./components/context/GlobalContext";
+import { Controls } from "./components/Controls";
+import { filterContext } from "./components/context/FilterContext";
 
-function App() {
-  const [count, setCount] = useState(0)
+import { CartIcon, BagIcon } from "./components/Svgs";
+import MobileFiltersMenu from "./components/MobileFiltersMenu";
 
+export function App() {
+  const { cart, handleUpdateQuantity, handleAddToCart, handleRemoveFromCart } =
+    useContext(GlobalContext);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const { filteredProducts, isLoading, setIsLoading } =
+    useContext(filterContext);
+
+  const [openMobileFiltersMenu, setOpenMobileFiltersMenu] = useState(true);
+  const mobileFiltersBg = useRef(null);
+
+  const handleOpenMobileFilters = () => {
+    if (mobileFiltersBg && mobileFiltersBg.current.id === "filter-bg") {
+      setOpenMobileFiltersMenu((open) => !open);
+    }
+  };
+  if (filteredProducts) setIsLoading(false);
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+    <div className="app">
+      <header className="app-header px-8 py-4">
+        <div className="hidden sm:flex items-center">
+          <BagIcon />
+          <h1 className="sm:text-2xl text-[1rem]">Shopping Fest</h1>
+        </div>
+        <Controls />
+        <button
+          className="mobile-filters-button px-2.5 cursor-pointer"
+          onClick={handleOpenMobileFilters}
+        >
+          <svg
+            className="shrink-0"
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            viewBox="0 0 32 32"
+          >
+            <path
+              fill="currentColor"
+              d="M12.9 7c-.4-1.7-2-3-3.9-3S5.6 5.3 5.1 7H2v2h3.1c.4 1.7 2 3 3.9 3s3.4-1.3 3.9-3H30V7zM9 10c-1.1 0-2-.9-2-2s.9-2 2-2s2 .9 2 2s-.9 2-2 2m14 2c-1.9 0-3.4 1.3-3.9 3H2v2h17.1c.4 1.7 2 3 3.9 3s3.4-1.3 3.9-3H30v-2h-3.1c-.4-1.7-2-3-3.9-3m0 6c-1.1 0-2-.9-2-2s.9-2 2-2s2 .9 2 2s-.9 2-2 2m-9 2c-1.9 0-3.4 1.3-3.9 3H2v2h8.1c.4 1.7 2 3 3.9 3s3.4-1.3 3.9-3H30v-2H17.9c-.4-1.7-2-3-3.9-3m0 6c-1.1 0-2-.9-2-2s.9-2 2-2s2 .9 2 2s-.9 2-2 2"
+            />
+          </svg>
         </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+        <button
+          className="cart-toggle-btn"
+          onClick={() => setIsCartOpen((open) => !open)}
+        >
+          <CartIcon /> ({cart.length})
+        </button>
+      </header>
 
-export default App
+      <div
+        className={` z-1000 bg-black/70 top-0 left-0 min-w-screen min-h-screen fixed grid place-content-center`}
+        onClick={handleOpenMobileFilters}
+        id="filter-bg"
+        ref={mobileFiltersBg}
+        hidden={openMobileFiltersMenu}
+      >
+        <MobileFiltersMenu hidden={openMobileFiltersMenu} />
+      </div>
+      <main className="app-main">
+        {isLoading && (
+          <h2 className="is-loading absolute top-[50%] left-[50%] text-(--text) text-3xl font-bold">
+            Cargando lista de productos...
+          </h2>
+        )}
+        <ProductGrid
+          setHidden={setOpenMobileFiltersMenu}
+          products={filteredProducts}
+          onAddToCart={handleAddToCart}
+        />
+      </main>
+
+      <CartSidebar
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        cartItems={cart}
+        onRemoveItem={handleRemoveFromCart}
+        onUpdateQuantity={handleUpdateQuantity}
+      />
+    </div>
+  );
+}
