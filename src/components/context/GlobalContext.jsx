@@ -7,7 +7,10 @@ export function GlobalProvider({ children }) {
   const [total, setTotal] = useState(0);
   const [cart, setCart] = useState([]);
 
-  const handleUpdateQuantity = (itemId, updatedQuantity) => {
+  const handleUpdateQuantity = (itemId, updatedQuantity, stock) => {
+    if (stock - updatedQuantity <= 0) {
+      return;
+    }
     if (updatedQuantity >= 1) {
       if (isOnCart(itemId) >= 0) {
         const newCart = cart.slice();
@@ -38,8 +41,11 @@ export function GlobalProvider({ children }) {
       handleTotal(newCart);
       return newCart;
     }
-    newCart.push({ ...product, quantity: 1 });
-    setCart((prevItems) => [...prevItems, { ...product, quantity: 1 }]);
+    newCart.push({ ...product, quantity: 1, stock: product.stock - 1 });
+    setCart((prevItems) => [
+      ...prevItems,
+      { ...product, quantity: 1, stock: product.stock - 1 },
+    ]);
     handleTotal(newCart);
     return;
   };

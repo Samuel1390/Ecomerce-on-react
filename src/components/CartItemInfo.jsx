@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { GlobalContext } from "./context/GlobalContext";
+import { CartItemControls } from "./CartItemControls";
 
 export const CartItemInfo = ({ item }) => {
   const cartContext = useContext(GlobalContext);
@@ -29,22 +30,7 @@ export const CartItemInfo = ({ item }) => {
         </div>
 
         <div className="cart-item-controls">
-          <div className="quantity-controls">
-            <button
-              className="quantity-btn"
-              onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
-            >
-              −
-            </button>
-            <span className="quantity">{item.quantity}</span>
-            <button
-              className="quantity-btn"
-              onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
-            >
-              +
-            </button>
-          </div>
-
+          <CartItemControls item={item} />
           <button
             className="remove-item-btn border-red-500 border"
             onClick={() => handleRemoveFromCart(item)}

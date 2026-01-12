@@ -142,7 +142,6 @@
 
 .quantity-controls {
   display: flex;
-  background: var(--background);
   align-items: center;
   gap: 0.5rem;
   border-radius: 20px;

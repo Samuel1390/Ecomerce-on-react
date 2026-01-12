@@ -1,17 +1,11 @@
 // components/CartSidebar.jsx
 import React from "react";
 import { CartItemInfo } from "./CartItemInfo";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { GlobalContext } from "./context/GlobalContext";
 import "./CartSidebar.css";
 
-const CartSidebar = ({
-  isOpen,
-  onClose,
-  cartItems,
-  onRemoveItem,
-  onUpdateQuantity,
-}) => {
+const CartSidebar = ({ isOpen, onClose, cartItems }) => {
   const { total } = useContext(GlobalContext);
   return (
     <>

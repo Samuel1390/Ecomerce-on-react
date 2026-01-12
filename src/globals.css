@@ -27,7 +27,7 @@
     --stock-green: var(--color-emerald-100);
   }
   span {
-    color: var(--text) !important;
+    color: var(--text);
   }
 }
 

@@ -1,7 +1,7 @@
 "useClient";
 
 import { AddToCartBtn } from "./AddToCartBtn";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./ProductCard.css";
 
 import { useContext } from "react";
@@ -32,9 +32,16 @@ const ProductCard = ({ product, order }) => {
     handleRemoveFromCart,
     clearCart,
   } = useContext(GlobalContext);
-
+  const [quantity, setQuantity] = useState(0);
+  useEffect(() => {
+    const index = isOnCart(id);
+    if (index >= 0) {
+      console.log(cart[index].quantity);
+      setQuantity(cart[index].quantity);
+    }
+  }, [cart]);
   return (
-    <div className="product-card" style={{ order: order }}>
+    <div key={id} className="product-card" style={{ order: order }}>
       <picture className="product-image ">
         <img
           className="object-cover"
@@ -85,10 +92,12 @@ const ProductCard = ({ product, order }) => {
         <div className="product-footer">
           <span
             className={`stock-status ${
-              stock > 0 ? "in-stock" : "out-of-stock"
+              stock - quantity > 0 ? "in-stock" : "out-of-stock"
             }`}
           >
-            {stock > 0 ? `${stock} disponibles` : "Agotado"}
+            {stock - quantity > 0
+              ? `${stock - quantity} disponibles`
+              : "Agotado"}
           </span>
           <AddToCartBtn product={product} />
         </div>
