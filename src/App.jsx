@@ -7,6 +7,7 @@ import CartSidebar from "./components/CartSidebar";
 import { GlobalContext } from "./components/context/GlobalContext";
 import { Controls } from "./components/Controls";
 import { filterContext } from "./components/context/FilterContext";
+import { ProductNotification } from "./components/ProductNotification";
 
 import { CartIcon, BagIcon } from "./components/Svgs";
 import MobileFiltersMenu from "./components/MobileFiltersMenu";
@@ -29,6 +30,7 @@ export function App() {
   if (filteredProducts) setIsLoading(false);
   return (
     <div className="app">
+      <ProductNotification />
       <header className="app-header px-8 py-4">
         <div className="hidden sm:flex items-center">
           <BagIcon />
